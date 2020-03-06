@@ -1,7 +1,7 @@
 <html>
   <head>
     <script src="https://unpkg.com/deck.gl@^7.0.0/dist.min.js"></script>
-    <script src="http://maps.googleapis.com/maps/api/js?key=AIzaSyC-o9bY6L4_w6wnLH9oOCcU_P9fCJ-Cn-o&libraries=visualization&v=3.34"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC-o9bY6L4_w6wnLH9oOCcU_P9fCJ-Cn-o&libraries=visualization&v=3.34"></script>
     <script src="https://d3js.org/d3.v5.min.js"></script>
 
     <style type="text/css">
@@ -119,27 +119,6 @@
 
   <script type="text/javascript">
 
-var today = new Date();
-var dd = today.getDate()-2;
-var mm = today.getMonth()+1;
-var yyyy = today.getFullYear();
-if(dd<10)
-{
-    dd='0'+dd;
-}
-if(mm<10)
-{
-    mm='0'+mm;
-}
-today = mm+'-'+dd+'-'+yyyy;
-const DATA_URL =
-        'https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_daily_reports/' + today + '.csv';
-
-console.log(DATA_URL)
-
-
-
-
 // source: Paris Open Data https://opendata.paris.fr/
 const DATA = d3.dsv(';', 'https://raw.githubusercontent.com/uber-common/deck.gl-data/master/examples/scatterplot/les-arbres.csv', row => {
   row.LONGITUDE *= 1;
@@ -151,18 +130,6 @@ const DATA = d3.dsv(';', 'https://raw.githubusercontent.com/uber-common/deck.gl-
   }
   return row;
 });
-
-
-//source corona
-const DATA_CORONA = d3.dsv(',', DATA_URL , row => {
-  row.Longitude *= 1;
-  row.Latitude *= 1;
-  row['Deaths'] *= 1;
-  return row;
-});
-
-
-
 
 function setTooltip({x, y, object}) {
   const tooltip = document.getElementById('tooltip');
@@ -177,8 +144,8 @@ function setTooltip({x, y, object}) {
 }
 
 const map = new google.maps.Map(document.getElementById('container'), {
-  center: {lat: 30.9756, lng: 112.2707},
-  zoom: 5,
+  center: {lat: 48.868, lng: 2.312},
+  zoom: 15,
   styles: JSON.parse(document.getElementById('map-style').innerText),
   mapTypeControlOptions: {
      mapTypeIds: ['roadmap']
@@ -210,16 +177,7 @@ const deckOverlay = new deck.GoogleMapsOverlay({
       onHover: setTooltip,
       radiusMinPixels: 1,
       getColor: d => colors(d.LIBELLEFRANCAIS)
-    }),
-   new deck.HeatmapLayer({
-      data: DATA_CORONA,
-      getPosition: d => [d.Longitude, d.Latitude],
-      getWeight: d => d['Deaths'] * 1000 ,
-      pickable: true,
-      onHover: setTooltip,
-      radiusMinPixels: 1,
-      getColor: d => colors(d.LIBELLEFRANCAIS)
-    }),
+    })
   ]
 });
 
